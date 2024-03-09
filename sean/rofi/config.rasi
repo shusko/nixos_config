@@ -1,0 +1,102 @@
+configuration {
+  display-drun: "";
+  display-window: "";
+  drun-display-format: "{icon} {name}";
+  show-icons: true;
+  font: "Nerd Font Medium 14";
+  modi: "window,run,drun";
+}
+
+@theme "/dev/null"
+
+* {
+    bg0:     #2B3339;
+    bg1:     #323D43;
+    fg0:     #D3C6AA;
+
+    accent-color:     #A7C080;
+    urgent-color:     #DBBC7F;
+
+    background-color:   transparent;
+    text-color:         @fg0;
+
+    margin:     0;
+    padding:    0;
+    spacing:    0;
+}
+
+window {
+    location:   center;
+    width:      25%;
+
+    background-color:   @bg0;
+}
+
+inputbar {
+    spacing:    12px; 
+    padding:    12px;
+
+    background-color:   @bg1;
+}
+
+prompt, entry, element-icon, element-text {
+    vertical-align: 0.5;
+}
+
+entry {
+  padding: 0.25em;
+}
+
+prompt {
+    text-color: @accent-color;
+}
+
+textbox {
+    padding:            8px;
+    background-color:   @bg1;
+}
+
+listview {
+    padding:    4px 0;
+    lines:      8;
+    columns:    1;
+
+    fixed-height:   false;
+}
+
+element {
+    padding:    0.75em;
+    spacing:    0.25em;
+}
+
+element normal normal {
+    text-color: @fg0;
+}
+
+element normal urgent {
+    text-color: @urgent-color;
+}
+
+element normal active {
+    text-color: @accent-color;
+}
+
+element selected {
+    text-color: @bg0;
+}
+
+element selected normal, element selected active {
+    background-color:   @accent-color;
+}
+
+element selected urgent {
+    background-color:   @urgent-color;
+}
+
+element-icon {
+    size:   1.2em;
+}
+
+element-text {
+    text-color: inherit;
+}
