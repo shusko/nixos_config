@@ -98,8 +98,9 @@
     isNormalUser = true;
     description = "sean";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
+    # packages = with pkgs; [];
   };
+
   # Never figured out how to move this to home-manager
   programs.steam = {
     enable = true;
@@ -107,7 +108,8 @@
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
   };
 
-  # Allow unfree packages (required for nvidia)
+  # Allow unfree packages
+  # (required for nvidia and steam)
   nixpkgs.config.allowUnfree = true;
 
   nix.settings.experimental-features = ["nix-command" "flakes"];

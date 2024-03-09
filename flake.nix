@@ -11,20 +11,26 @@
   };
 
   outputs = { self, nixpkgs, home-manager }: {
-    nixosConfigurations.seanbox = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ./configuration.nix
+    nixosConfigurations = {
 
-        home-manager.nixosModules.home-manager {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.sean = import ./sean;
+      seanbox_4080super = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/seanbox_4080super
 
-          # Pass args to home.nix with home-manager.extraSpecialArgs
-        }
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.sean = import ./users/sean;
 
-      ];
+            # Pass args to home.nix with home-manager.extraSpecialArgs
+          }
+
+        ];
+      };
+
+      # Add additional host machine configs here
+
     };
   };
 }

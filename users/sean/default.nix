@@ -32,6 +32,9 @@
     lm_sensors
     xclip
 
+    # Nix LSP
+    nil
+
     # Run launcher
     rofi
 
