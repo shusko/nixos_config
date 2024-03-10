@@ -84,14 +84,25 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
-  # Sound
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
-
   # Bluetooth
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    hsphfpd.enable = false; # handled by Wireplumber (pipewire)
+  };
   services.blueman.enable = true;
+
+  security.rtkit.enable = true;
+
+  # Sound
+  sound.enable = false; # Use pipewire for sound
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.sean = {
@@ -141,6 +152,11 @@
     # GUI deps
     qt5ct
     gtk3
+
+    # Audio setup
+    pavucontrol
+    pulseaudioFull
+    pamixer
   ];
 
   environment.interactiveShellInit = ''

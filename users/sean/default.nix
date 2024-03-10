@@ -36,6 +36,9 @@
     # Nix LSP
     nil
 
+    # Lua LSP
+    lua-language-server
+
     # Run launcher
     rofi
 
