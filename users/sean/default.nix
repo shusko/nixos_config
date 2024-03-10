@@ -7,6 +7,7 @@
     ./firefox.nix
     ./git.nix
     ./neovim.nix
+    ./direnv.nix
     ./rofi.nix
     ./shell.nix
   ];

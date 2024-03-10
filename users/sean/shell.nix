@@ -35,6 +35,10 @@
     initExtra = ''
       bindkey -v
       bindkey "^R" history-incremental-search-backward
+
+      # Hook in direnv for dynamic Nix shell
+      # https://direnv.net/
+      eval "$(direnv hook zsh)"
       '';
   };
 }
