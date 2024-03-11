@@ -32,6 +32,7 @@
     lsof
     lm_sensors
     xclip
+    openconnect
 
     # Nix LSP
     nil
