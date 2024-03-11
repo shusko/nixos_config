@@ -14,7 +14,7 @@ sudo nixos-rebuild switch --flake $(pwd)#seanbox_4080super
 
 ## Creating a new User
 
-To make a new user, create a new nix module under `./users/my_new_user` with entry point `default.nix`. Your user be managed by [home-manager](https://nixos.wiki/wiki/Home_Manager). Add home-manager as a Nix Module into your host config and import your user module into home-manager users. Follow the existing code as a guide in `flake.nix`.
+To make a new user, create a new nix module under `./users/my_new_user` with entry point `default.nix`. Your user should be managed by [home-manager](https://nixos.wiki/wiki/Home_Manager). Add home-manager as a Nix Module into your host config and import your user module into home-manager users. Follow the existing code as a guide in `flake.nix`.
 
 ## Creating a new Host
 
@@ -75,7 +75,6 @@ sudo nixos-rebuild switch --flake .#my_new_host
 # Update system packages and config as needed, git add, rebuild, repeat...
 
 git commit
-
 
 # Use git checkout/revert to rebuild any previous state you've committed
 ```
