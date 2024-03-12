@@ -53,6 +53,9 @@
     brave
     discord
 
+    # Email
+    thunderbird
+
     # Password manager
     bitwarden
 
