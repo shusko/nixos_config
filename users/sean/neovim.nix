@@ -8,6 +8,14 @@
     viAlias = true;
     vimAlias = true;
 
+    extraPackages = with pkgs; [
+      nil # Nix LSP
+      lua-language-server # Lua LSP
+      nodePackages.intelephense # PHP LSP
+      nodePackages.typescript-language-server # JS/TS LSP
+      nodePackages.vscode-html-languageserver-bin # HTML / CSS LSP
+    ];
+
     plugins = with pkgs.vimPlugins; [
       {
         plugin = everforest;
@@ -115,10 +123,14 @@
             end,
           })
 
-          lspconfig.rust_analyzer.setup {} 
-          lspconfig.gopls.setup {} 
-          lspconfig.nil_ls.setup {} 
-          lspconfig.lua_ls.setup {} 
+          lspconfig.rust_analyzer.setup {}
+          lspconfig.gopls.setup {}
+          lspconfig.nil_ls.setup {}
+          lspconfig.lua_ls.setup {}
+          lspconfig.tsserver.setup {}
+          lspconfig.intelephense.setup {}
+          lspconfig.html.setup {}
+          lspconfig.cssls.setup {}
         '';
       }
     ];

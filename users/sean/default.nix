@@ -35,11 +35,9 @@
     openconnect
     docker-compose
 
-    # Nix LSP
-    nil
-
-    # Lua LSP
-    lua-language-server
+    # Node.js
+    nodejs
+    typescript
 
     # Run launcher
     rofi
