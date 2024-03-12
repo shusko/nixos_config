@@ -13,7 +13,6 @@
       lua-language-server # Lua LSP
       nodePackages.intelephense # PHP LSP
       nodePackages.typescript-language-server # JS/TS LSP
-      nodePackages.vscode-html-languageserver-bin # HTML / CSS LSP
     ];
 
     plugins = with pkgs.vimPlugins; [
@@ -117,6 +116,13 @@
               vim.api.nvim_create_autocmd('BufWritePre', {
                 buffer = ev.buf,
                 callback = function()
+                  -- Excluding certain filetypes
+                  local fmt_exclude_filetypes = { "php" }
+                  for _, filetype in ipairs(fmt_exclude_filetypes) do
+                    if vim.bo.filetype == filetype then
+                      return
+                    end
+                  end
                   vim.lsp.buf.format {}
                 end,
               })
@@ -129,8 +135,6 @@
           lspconfig.lua_ls.setup {}
           lspconfig.tsserver.setup {}
           lspconfig.intelephense.setup {}
-          lspconfig.html.setup {}
-          lspconfig.cssls.setup {}
         '';
       }
     ];
