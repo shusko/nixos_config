@@ -33,6 +33,7 @@
     lm_sensors
     xclip
     openconnect
+    docker-compose
 
     # Nix LSP
     nil

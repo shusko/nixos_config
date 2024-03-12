@@ -84,6 +84,12 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+  };
+
   # Bluetooth
   hardware.bluetooth = {
     enable = true;
@@ -108,7 +114,7 @@
   users.users.sean = {
     isNormalUser = true;
     description = "sean";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     # packages = with pkgs; [];
   };
 
