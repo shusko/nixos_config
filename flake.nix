@@ -8,6 +8,7 @@
       url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
   };
 
   outputs = { self, nixpkgs, home-manager }: {
@@ -21,9 +22,12 @@
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.sean = import ./users/sean;
+            home-manager.extraSpecialArgs = { }; # Pass extra args to home.nix with this set
+            home-manager.users = {
+              sean = import ./users/sean/home.nix;
 
-            # Pass args to home.nix with home-manager.extraSpecialArgs
+              # Add additional users here
+            };
           }
 
         ];

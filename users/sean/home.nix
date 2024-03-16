@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, options, specialArgs, modulesPath, nixosConfig, osConfig  }:
 
 {
   imports = [
@@ -34,6 +34,7 @@
     xclip
     openconnect
     docker-compose
+    sqlite
 
     # Node.js
     nodejs
@@ -47,7 +48,6 @@
 
     # Misc
     tree
-    cowsay
 
     # Web apps
     brave
