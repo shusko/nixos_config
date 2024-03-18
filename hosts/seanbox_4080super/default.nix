@@ -13,6 +13,12 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelModules = [
+    "v4l2loopback" # Webcam loopback
+  ];
+  boot.extraModulePackages = [
+    pkgs.linuxPackages.v4l2loopback # Webcam loopback
+  ];
 
   # Enable networking
   networking.hostName = "seanbox";
@@ -163,6 +169,11 @@
     pavucontrol
     pulseaudioFull
     pamixer
+
+    # Webcam packages
+    v4l-utils
+    android-tools
+    adb-sync
   ];
 
   environment.interactiveShellInit = ''

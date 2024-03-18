@@ -32,13 +32,20 @@
     lsof
     lm_sensors
     xclip
-    openconnect
-    docker-compose
-    sqlite
 
-    # Node.js
+    # VPN
+    openconnect
+
+    # Work stuff
+    docker-compose
     nodejs
     typescript
+    sqlite
+
+    # Video conferencing / streaming
+    zoom-us
+    droidcam
+    obs-studio
 
     # Run launcher
     rofi
