@@ -176,6 +176,11 @@
     adb-sync
   ];
 
+  services.mysql = {
+    enable = true;
+    package = pkgs.mariadb;
+  };
+
   environment.interactiveShellInit = ''
     alias vim='nvim'
     alias grep='rg'
