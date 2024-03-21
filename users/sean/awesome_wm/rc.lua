@@ -1,12 +1,3 @@
---[[
-
-     Awesome WM configuration template
-     github.com/lcpz
-
---]]
-
--- {{{ Required libraries
-
 -- If LuaRocks is installed, make sure that packages installed through it are
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
@@ -24,10 +15,9 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 local mytable = awful.util.table or gears.table -- 4.{0,1} compatibility
 
--- }}}
 
--- {{{ Error handling
-
+-- Error handling
+-----------------
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
@@ -57,9 +47,8 @@ do
     end)
 end
 
--- }}}
-
--- {{{ Autostart windowless processes
+-- Autostart windowless processes
+---------------------------------
 -- This function will run once every time Awesome is started
 local function run_once(cmd_arr)
     for _, cmd in ipairs(cmd_arr) do
@@ -67,23 +56,9 @@ local function run_once(cmd_arr)
     end
 end
 run_once({ "urxvtd", "unclutter -root" }) -- comma-separated entries
--- }}}
 
--- {{{ Variable definitions
-local themes                           = {
-    "blackburn",       -- 1
-    "copland",         -- 2
-    "dremora",         -- 3
-    "holo",            -- 4
-    "multicolor",      -- 5
-    "powerarrow",      -- 6
-    "powerarrow-dark", -- 7
-    "rainbow",         -- 8
-    "steamburn",       -- 9
-    "vertex"           -- 10
-}
-
-local chosen_theme                     = themes[7]
+-- Variable definitions
+-----------------------
 local modkey                           = "Mod4"
 local altkey                           = "Mod1"
 local terminal                         = "alacritty"
@@ -157,13 +132,11 @@ awful.util.tasklist_buttons            = mytable.join(
     awful.button({}, 5, function() awful.client.focus.byidx(-1) end)
 )
 
-beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
+beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme/theme.lua")
 
--- }}}
-
--- {{{ Screen
-
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
+-- Screen
+---------
+-- Reset wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", function(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -193,24 +166,22 @@ awful.screen.connect_for_each_screen(function(s)
     beautiful.at_screen_connect(s)
 end)
 
--- }}}
+-- Mouse bindings
+-----------------
+root.buttons(awful.button({}, 3, function() awful.util.mymainmenu:toggle() end));
+-- root.buttons(mytable.join(
+--     awful.button({}, 3, function() awful.util.mymainmenu:toggle() end),
+--     awful.button({}, 4, awful.tag.viewnext),
+--     awful.button({}, 5, awful.tag.viewprev)
+-- ))
 
--- {{{ Mouse bindings
-
-root.buttons(mytable.join(
-    awful.button({}, 3, function() awful.util.mymainmenu:toggle() end),
-    awful.button({}, 4, awful.tag.viewnext),
-    awful.button({}, 5, awful.tag.viewprev)
-))
-
--- }}}
-
--- {{{ Key bindings
-
+-- Key bindings
+---------------
 globalkeys = mytable.join(
 -- Destroy all notifications
     awful.key({ "Control", }, "space", function() naughty.destroy_all_notifications() end,
         { description = "destroy all notifications", group = "hotkeys" }),
+
     -- Take a screenshot
     -- https://github.com/lcpz/dots/blob/master/bin/screenshot
     awful.key({ altkey }, "p", function() os.execute("screenshot") end,
@@ -318,7 +289,7 @@ globalkeys = mytable.join(
         { description = "toggle wibox", group = "awesome" }),
 
     -- On-the-fly useless gaps change
-    awful.key({ altkey, "Control" }, "+", function() lain.util.useless_gaps_resize(1) end,
+    awful.key({ altkey, "Control" }, "=", function() lain.util.useless_gaps_resize(1) end,
         { description = "increment useless gaps", group = "tag" }),
     awful.key({ altkey, "Control" }, "-", function() lain.util.useless_gaps_resize(-1) end,
         { description = "decrement useless gaps", group = "tag" }),
@@ -385,24 +356,20 @@ globalkeys = mytable.join(
     awful.key({}, "XF86MonBrightnessDown", function() os.execute("xbacklight -dec 10") end,
         { description = "-10%", group = "hotkeys" }),
 
-    -- ALSA volume control
-    awful.key({ altkey }, "Up",
+    -- Volume control
+    awful.key({ modkey }, "Up",
         function()
-            os.execute(string.format("amixer -q set %s 1%%+", beautiful.volume.channel))
-            beautiful.volume.update()
+            os.execute("pamixer --increase 1")
         end,
         { description = "volume up", group = "hotkeys" }),
-    awful.key({ altkey }, "Down",
+    awful.key({ modkey }, "Down",
         function()
-            os.execute(string.format("amixer -q set %s 1%%-", beautiful.volume.channel))
-            beautiful.volume.update()
+            os.execute("pamixer --decrease 1")
         end,
         { description = "volume down", group = "hotkeys" }),
-    awful.key({ altkey }, "m",
+    awful.key({ modkey }, "m",
         function()
-            os.execute(string.format("amixer -q set %s toggle",
-                beautiful.volume.togglechannel or beautiful.volume.channel))
-            beautiful.volume.update()
+            os.execute("pamixer --toggle-mute")
         end,
         { description = "toggle mute", group = "hotkeys" }),
 
@@ -491,19 +458,19 @@ clientkeys = mytable.join(
         { description = "move to screen", group = "client" }),
     awful.key({ modkey, }, "t", function(c) c.ontop = not c.ontop end,
         { description = "toggle keep on top", group = "client" }),
-    awful.key({ modkey, }, "n",
-        function(c)
-            -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.
-            c.minimized = true
-        end,
-        { description = "minimize", group = "client" }),
-    awful.key({ modkey, }, "m",
-        function(c)
-            c.maximized = not c.maximized
-            c:raise()
-        end,
-        { description = "(un)maximize", group = "client" }),
+    -- awful.key({ modkey, }, "n",
+    --     function(c)
+    --         -- The client currently has the input focus, so it cannot be
+    --         -- minimized, since minimized clients can't have the focus.
+    --         c.minimized = true
+    --     end,
+    --     { description = "minimize", group = "client" }),
+    -- awful.key({ modkey, }, "m",
+    --     function(c)
+    --         c.maximized = not c.maximized
+    --         c:raise()
+    --     end,
+    --     { description = "(un)maximize", group = "client" }),
     awful.key({ modkey, "Control" }, "m",
         function(c)
             c.maximized_vertical = not c.maximized_vertical
@@ -585,10 +552,8 @@ clientbuttons = mytable.join(
 -- Set keys
 root.keys(globalkeys)
 
--- }}}
-
--- {{{ Rules
-
+-- Rules
+--------
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -654,10 +619,8 @@ awful.rules.rules = {
     --   properties = { screen = 1, tag = "2" } },
 }
 
--- }}}
-
--- {{{ Signals
-
+-- Signals
+----------
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
     -- Set the windows at the slave,
@@ -743,5 +706,3 @@ client.connect_signal("property::minimized", backham)
 client.connect_signal("unmanage", backham)
 -- ensure there is always a selected client during tag switching or logins
 tag.connect_signal("property::selected", backham)
-
--- }}}
