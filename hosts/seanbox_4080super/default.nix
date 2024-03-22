@@ -146,6 +146,7 @@
     ripgrep
     pciutils
     usbutils
+    lm_sensors
 
     # Text editor
     neovim

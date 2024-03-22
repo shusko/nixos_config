@@ -25,18 +25,19 @@
   home.packages = with pkgs; [
     # Utils
     htop
-    jq
+    lsof
+    strace
+    xclip   # clipboard manager
+    feh     # view images
+    scrot   # take screenshots
     zip
     unzip
-    strace
-    lsof
-    lm_sensors
-    xclip
 
     # VPN
     openconnect
 
     # Work stuff
+    jq
     docker-compose
     nodejs
     typescript

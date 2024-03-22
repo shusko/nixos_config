@@ -184,8 +184,12 @@ globalkeys = mytable.join(
 
     -- Take a screenshot
     -- https://github.com/lcpz/dots/blob/master/bin/screenshot
-    awful.key({ altkey }, "p", function() os.execute("screenshot") end,
-        { description = "take a screenshot", group = "hotkeys" }),
+    awful.key({ modkey, "Shift" }, "s", function()
+            awful.util.spawn_with_shell("mkdir -p " .. os.getenv("HOME") .. "/Images ")
+            awful.util.spawn_with_shell("scrot -s " .. os.getenv("HOME") .. "/Images/screenshot_%Y-%m-%d_%H-%M-%S.png")
+        end,
+        { description = "take a screenshot", group = "hotkeys" }
+    ),
 
     -- X screen locker
     awful.key({ altkey, "Control" }, "l", function() os.execute(scrlocker) end,
