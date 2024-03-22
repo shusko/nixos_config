@@ -13,6 +13,7 @@
       lua-language-server # Lua LSP
       nodePackages.intelephense # PHP LSP
       nodePackages.typescript-language-server # JS/TS LSP
+      nodePackages.prettier # Autoformatting for JS/TS/HTML/CSS
     ];
 
     plugins = with pkgs.vimPlugins; [
@@ -27,8 +28,11 @@
         plugin = nvim-comment;
         type = "lua";
         config = ''
-          line_mapping = "<leader>cc"
-          operator_mapping = "<leader>c"
+          local com = require('nvim_comment')
+          com.setup({
+            line_mapping = "<leader>cl",
+            operator_mapping = "<leader>c"
+          })
         '';
       }
       {
@@ -70,6 +74,7 @@
       }
       nvim-treesitter.withAllGrammars
       copilot-vim
+      vim-prettier
       {
         plugin = nvim-lspconfig;
         type = "lua";
@@ -86,47 +91,50 @@
           -- Use LspAttach autocommand to only map the following keys
           -- after the language server attaches to the current buffer
           vim.api.nvim_create_autocmd('LspAttach', {
-            group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-            callback = function(ev)
-              -- Enable completion triggered by <c-x><c-o>
-              vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+              group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+              callback = function(ev)
+                  -- Enable completion triggered by <c-x><c-o>
+                  vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-              -- Buffer local mappings.
-              -- See `:help vim.lsp.*` for documentation on any of the below functions
-              local opts = { buffer = ev.buf }
-              vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-              vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-              vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-              vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-              vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-              vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-              vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-              vim.keymap.set('n', '<leader>wl', function()
-                print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-              end, opts)
-              vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
-              vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-              vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
-              vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-              vim.keymap.set('n', '=', function()
-                vim.lsp.buf.format {}
-              end, opts)
+                  -- Buffer local mappings.
+                  -- See `:help vim.lsp.*` for documentation on any of the below functions
+                  local opts = { buffer = ev.buf }
+                  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+                  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+                  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+                  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+                  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+                  vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
+                  vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
+                  vim.keymap.set('n', '<leader>wl', function()
+                      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+                  end, opts)
+                  vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
+                  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+                  vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
+                  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
 
-              -- Set up format on save using lSP
-              vim.api.nvim_create_autocmd('BufWritePre', {
-                buffer = ev.buf,
-                callback = function()
-                  -- Excluding certain filetypes
-                  local fmt_exclude_filetypes = { "php" }
-                  for _, filetype in ipairs(fmt_exclude_filetypes) do
-                    if vim.bo.filetype == filetype then
-                      return
-                    end
-                  end
-                  vim.lsp.buf.format {}
-                end,
-              })
-            end,
+                  vim.api.nvim_create_autocmd('BufWritePre', {
+                      buffer = ev.buf,
+                      callback = function()
+                          local filetype = vim.bo.filetype
+
+                          -- For php, use vendored composer php-cs-fixer
+                          if filetype == 'php' then
+                              return
+                          end
+
+                          -- For javascript, typescript, css, and html, use prettier
+                          if filetype == 'javascript' or filetype == 'typescript' or filetype == 'css' or filetype == 'html' then
+                              vim.cmd('Prettier')
+                              return
+                          end
+
+                          -- For all other filetypes, use lsp formatting
+                          vim.lsp.buf.format()
+                      end,
+                  })
+              end,
           })
 
           lspconfig.rust_analyzer.setup {}
@@ -154,24 +162,19 @@
       vim.opt.nu = true
       vim.opt.rnu = true
 
-      -- Tab behavior
-      vim.opt.tabstop = 4
-      vim.opt.shiftwidth = 4
-      vim.opt.smartindent = true
-      vim.opt.expandtab = true
-      -- Ignore case while using tab autocomplete
-      vim.opt.wildignorecase = true
-      -- Use tabs not spaces for certain filetypes
-      vim.cmd [[ autocmd FileType go setlocal noexpandtab ]]
-      -- Use 2 spaces sometimes
-      vim.cmd [[ autocmd FileType nix setlocal tabstop=2 shiftwidth=2 ]]
-      vim.cmd [[ autocmd FileType html setlocal tabstop=2 shiftwidth=2 ]]
-      vim.cmd [[ autocmd FileType css setlocal tabstop=2 shiftwidth=2 ]]
-      vim.cmd [[ autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 ]]
-      vim.cmd [[ autocmd FileType typescript setlocal tabstop=2 shiftwidth=2 ]]
-      vim.cmd [[ autocmd FileType typescriptreact setlocal tabstop=2 shiftwidth=2 ]]
-      vim.cmd [[ autocmd FileType vue setlocal tabstop=2 shiftwidth=2 ]]
-      vim.cmd [[ autocmd BufRead,BufNewFile *.blade.php setlocal tabstop=2 shiftwidth=2 ]]
+      -- Set global tab behavior based on <leader>tab mapping
+      vim.keymap.set('n', '<leader><tab><tab>', function()
+          vim.opt.tabstop = 2
+          vim.opt.shiftwidth = 2
+          vim.opt.expandtab = false
+      end, { noremap = true, silent = true })
+      for i = 1, 8 do
+          vim.keymap.set('n', '<leader><tab>' .. i, function()
+              vim.opt.tabstop = i
+              vim.opt.shiftwidth = i
+              vim.opt.expandtab = true
+          end, { noremap = true, silent = true })
+      end
 
       -- Searching with '/'
       vim.opt.ignorecase = true
