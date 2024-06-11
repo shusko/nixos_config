@@ -59,6 +59,9 @@
 
     # Web apps
     brave
+    google-chrome
+
+    # Chat
     discord
 
     # Email

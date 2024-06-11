@@ -161,6 +161,12 @@ screen.connect_signal("arrange", function(s)
     end
 end)
 
+client.connect_signal("property::maximized", function(c)
+    if c.maximized and (c.class == "Brave-browser" or c.class == "firefox") then
+        c.maximized = false
+    end
+end)
+
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s)
     beautiful.at_screen_connect(s)
