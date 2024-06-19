@@ -42,6 +42,7 @@
     nodejs
     typescript
     sqlite
+    ngrok
 
     # Video conferencing / streaming
     zoom-us
